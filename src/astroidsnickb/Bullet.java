@@ -8,13 +8,13 @@ import java.awt.geom.Rectangle2D;
 
 public class Bullet
 {
-    double bulletSpeed = 15;
+    private Area bulletArea;
+    double bulletSpeed = 5;
     double bulletXspeed;
     double bulletYspeed;
     double bulletXpos;
     double bulletYpos;
     double bulletSize;
-    Area bulletArea = new Area();
     double bulletDeltaX;
     double bulletDeltaY;
     int bulletWidth = 3;
@@ -31,10 +31,12 @@ public class Bullet
         bulletXpos = shipXpos;
         bulletYpos = shipYpos;
         bulletShape = new Rectangle2D.Double(0, 0, bulletWidth, bulletHeight);
+        bulletArea = new Area(bulletShape);
     }
 
     public void paintSelf(Graphics2D g2)
     {
+        g2.setTransform(getBulletAffineTransform());
         g2.setColor(Color.RED);
         g2.setTransform(new AffineTransform());
         bulletDeltaX = Math.sin(Math.toRadians(shipHeading)) * (shipSpeed + bulletSpeed);
@@ -42,13 +44,17 @@ public class Bullet
         bulletXpos += bulletDeltaX;
         bulletYpos += bulletDeltaY;
         g2.translate(bulletXpos, bulletYpos);
+        g2.fill(bulletArea);
         bulletAffineTransform = g2.getTransform();
-        bulletArea.createTransformedArea(bulletAffineTransform);
-        g2.fill(bulletShape);
     }
 
     public AffineTransform getBulletAffineTransform()
     {
         return bulletAffineTransform;
+    }
+
+    public Area getBulletArea()
+    {
+        return bulletArea;
     }
 }
