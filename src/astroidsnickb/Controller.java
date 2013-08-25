@@ -1,5 +1,8 @@
 package astroidsnickb;
-
+/*****************************************************************
+ * copyright Nick Barber 2013, All Rights Reserved
+ * rev 130825 fixed bullet/asteroid collision
+ *****************************************************************/
 import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -48,6 +51,7 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         SwingUtilities.invokeLater(new Controller());
     }
 
+    @Override
     public void run()
     {
         astroidList = new ArrayList<Astroid>();
@@ -139,10 +143,9 @@ public class Controller extends JComponent implements KeyListener, ActionListene
             {
                 Astroid a = astroidList.get(j);
                 astroidArea = a.getAstroidArea();
-                astroidArea.createTransformedArea(a.getAstroidAffineTransform());
-                bulletArea.createTransformedArea(b.getBulletAffineTransform());
-                System.out.println(astroidArea.getBounds().x + " / " + bulletArea.getBounds().x);
-                //System.out.println(bulletArea.getBounds() + "    /    " + astroidArea.getBounds());
+                bulletArea = b.getBulletArea();
+                astroidArea = astroidArea.createTransformedArea(a.getAstroidAffineTransform());
+                bulletArea = bulletArea.createTransformedArea(b.getBulletAffineTransform());
                 if (collision(bulletArea, astroidArea))
                 {
                     astroidList.remove(j);
