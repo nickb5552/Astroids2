@@ -54,6 +54,7 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         SwingUtilities.invokeLater(new Controller());
     }
 
+    @Override
     public void run()
     {
         astroidList = new ArrayList<Astroid>();
