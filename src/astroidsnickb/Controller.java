@@ -1,8 +1,10 @@
 package astroidsnickb;
-/*****************************************************************
- * copyright Nick Barber 2013, All Rights Reserved
- * rev 130825 fixed bullet/asteroid collision
- *****************************************************************/
+
+/**
+ * *************************************************
+ * copyright Nick Barber 2013 Rev130825A
+ * *************************************************
+ */
 import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -23,6 +25,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import quicktime.app.players.Playable;
 
 public class Controller extends JComponent implements KeyListener, ActionListener, Runnable
 {
@@ -43,8 +46,8 @@ public class Controller extends JComponent implements KeyListener, ActionListene
     Area shipArea = new Area();
     Area astroidArea = new Area();
     Area bulletArea = new Area();
-//    URL fireSoundAddress = getClass().getResource("bullet.wav");
-//    AudioClip fireFile = JApplet.newAudioClip(fireSoundAddress);
+    URL fireSoundAddress = getClass().getResource("bullet.wav");
+    AudioClip fireFile = JApplet.newAudioClip(fireSoundAddress);
 
     public static void main(String[] joe)
     {
@@ -98,7 +101,6 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         battleCruiser.paintSelf(g2);
         for (int i = 0; i < astroidList.size(); i++)
         {
-            g2.setTransform(new AffineTransform());
             Astroid a = astroidList.get(i);
             a.paintSelf(g2);
             if (a.getAstroidXtranslation() > width) //right
@@ -143,14 +145,19 @@ public class Controller extends JComponent implements KeyListener, ActionListene
             {
                 Astroid a = astroidList.get(j);
                 astroidArea = a.getAstroidArea();
-                bulletArea = b.getBulletArea();
                 astroidArea = astroidArea.createTransformedArea(a.getAstroidAffineTransform());
+                bulletArea = b.getBulletArea();
                 bulletArea = bulletArea.createTransformedArea(b.getBulletAffineTransform());
+                if (collision(battleCruiser.getShipArea(), astroidArea))
+                {
+                    System.exit(0);
+                }
                 if (collision(bulletArea, astroidArea))
                 {
                     astroidList.remove(j);
                 }
             }
+
         }
     }
 
@@ -183,7 +190,7 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         if (ke.getKeyCode() == KeyEvent.VK_SPACE) //spacebar shoot bullet
         {
             bulletList.add(new Bullet(shipXpos, shipYpos, shipSpeed, shipHeading));
-//            fireFile.play();
+            fireFile.play();
         }
     }
 

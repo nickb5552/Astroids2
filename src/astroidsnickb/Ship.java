@@ -32,11 +32,11 @@ public class Ship
 
     public void paintSelf(Graphics2D g2)
     {
-        g2.setTransform(shipAffineTransform);
+        g2.setTransform(shipAffineTransform); // clean up
         shipDeltaX = Math.sin(Math.toRadians(getShipHeading())) * getShipSpeed();
         shipDeltaY = -Math.cos(Math.toRadians(shipHeading)) * getShipSpeed();
-        shipXpos = getShipXpos() + shipDeltaX;
-        setShipYpos(getShipYpos() + shipDeltaY);
+        shipXpos = shipXpos + shipDeltaX;
+        shipYpos = shipYpos + shipDeltaY;
         if (getShipYpos() < 0)
         {
             setShipYpos(height);
@@ -57,13 +57,19 @@ public class Ship
         }
         g2.setStroke(new BasicStroke(.01f));
         g2.setColor(Color.BLUE);
-        g2.translate(getShipXpos(), getShipYpos());
-        g2.scale(20, 20);
-        g2.rotate(Math.toRadians(getShipHeading()));
-        shipAffineTransform = g2.getTransform();
+        shipAffineTransform.setToTranslation(shipXpos, shipXpos); 
+        shipAffineTransform.setToScale(20, 20); 
+        shipAffineTransform.setToRotation(Math.toRadians(getShipHeading()));
+//        g2.translate(getShipXpos(), getShipYpos()); //moving the screen
+//        g2.scale(20, 20);
+//        g2.rotate(Math.toRadians(getShipHeading()));
+        //shipAffineTransform = g2.getTransform();
+        
+        System.out.println(g2.getTransform().getTranslateX());
+        shipArea = shipArea.createTransformedArea(shipAffineTransform);
         g2.fill(shipShape);
         g2.setColor(Color.WHITE);
-        g2.draw(shipArea);
+        g2.draw(shipShape);
         g2.setTransform(new AffineTransform());
         g2.drawString("Course " + getShipHeading(), 1800, 200);
         g2.drawString("Speed " + getShipSpeed(), 1800, 300);
