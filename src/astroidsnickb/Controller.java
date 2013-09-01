@@ -2,7 +2,7 @@ package astroidsnickb;
 
 /**
  * *************************************************
- * copyright Nick Barber 2013 Rev130825A
+ * copyright Nick Barber 2013 Rev130831A
  * *************************************************
  */
 import java.applet.AudioClip;
@@ -25,7 +25,6 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import quicktime.app.players.Playable;
 
 public class Controller extends JComponent implements KeyListener, ActionListener, Runnable
 {
@@ -94,6 +93,7 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         g2.setTransform(new AffineTransform());
         g2.setColor(Color.WHITE);
         g2.drawString(astroidList.size() + " astroids", (width - 760), 400);
+        g2.drawString(bulletList.size() + " bullets", (width - 760), 500);
         this.shipXpos = battleCruiser.getShipXpos();
         this.shipYpos = battleCruiser.getShipYpos();
         this.shipHeading = battleCruiser.getShipHeading();
@@ -189,8 +189,8 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         }
         if (ke.getKeyCode() == KeyEvent.VK_SPACE) //spacebar shoot bullet
         {
-            bulletList.add(new Bullet(shipXpos, shipYpos, shipSpeed, shipHeading));
             fireFile.play();
+            bulletList.add(new Bullet(shipXpos, shipYpos, shipSpeed, shipHeading));
         }
     }
 

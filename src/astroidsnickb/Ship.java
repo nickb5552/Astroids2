@@ -10,6 +10,7 @@ import java.awt.geom.Area;
 
 public class Ship
 {
+
     int width = Toolkit.getDefaultToolkit().getScreenSize().width;
     int height = Toolkit.getDefaultToolkit().getScreenSize().height;
     private double shipXpos = 950;
@@ -18,7 +19,7 @@ public class Ship
     double shipDeltaX = 0;
     double shipDeltaY = 0;
     private double shipHeading = 0;
-    AffineTransform shipAffineTransform = new AffineTransform(); //clean affine transform
+    AffineTransform shipAffineTransform = new AffineTransform();
     int[] xPoints =
     {
         0, 3, 1, 1, -1, -1, -3
@@ -32,7 +33,9 @@ public class Ship
 
     public void paintSelf(Graphics2D g2)
     {
-        g2.setTransform(shipAffineTransform); // clean up
+        g2.setTransform(new AffineTransform()); // clean up
+        g2.drawString("Course " + getShipHeading(), 1800, 200);
+        g2.drawString("Speed " + getShipSpeed(), 1800, 300);
         shipDeltaX = Math.sin(Math.toRadians(getShipHeading())) * getShipSpeed();
         shipDeltaY = -Math.cos(Math.toRadians(shipHeading)) * getShipSpeed();
         shipXpos = shipXpos + shipDeltaX;
@@ -57,22 +60,14 @@ public class Ship
         }
         g2.setStroke(new BasicStroke(.01f));
         g2.setColor(Color.BLUE);
-        shipAffineTransform.setToTranslation(shipXpos, shipXpos); 
-        shipAffineTransform.setToScale(20, 20); 
-        shipAffineTransform.setToRotation(Math.toRadians(getShipHeading()));
-//        g2.translate(getShipXpos(), getShipYpos()); //moving the screen
-//        g2.scale(20, 20);
-//        g2.rotate(Math.toRadians(getShipHeading()));
-        //shipAffineTransform = g2.getTransform();
-        
-        System.out.println(g2.getTransform().getTranslateX());
+        g2.translate(getShipXpos(), getShipYpos()); //moving the screen
+        g2.scale(20, 20);
+        g2.rotate(Math.toRadians(getShipHeading()));
         shipArea = shipArea.createTransformedArea(shipAffineTransform);
-        g2.fill(shipShape);
+        g2.fill(shipArea);
         g2.setColor(Color.WHITE);
-        g2.draw(shipShape);
+        g2.draw(shipArea);
         g2.setTransform(new AffineTransform());
-        g2.drawString("Course " + getShipHeading(), 1800, 200);
-        g2.drawString("Speed " + getShipSpeed(), 1800, 300);
         shipAffineTransform = g2.getTransform();
     }
 
