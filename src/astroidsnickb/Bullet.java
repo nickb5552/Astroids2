@@ -28,22 +28,20 @@ public class Bullet
     {
         this.shipHeading = shipHeading;
         this.shipSpeed = shipSpeed;
-        bulletXpos = shipXpos;
-        bulletYpos = shipYpos;
+        this.bulletXpos = shipXpos;
+        this.bulletYpos = shipYpos;
         bulletShape = new Rectangle2D.Double(0, 0, bulletWidth, bulletHeight);
         bulletArea = new Area(bulletShape);
     }
 
     public void paintSelf(Graphics2D g2)
     {
-        g2.setTransform(getBulletAffineTransform());
-        g2.setColor(Color.RED);
         g2.setTransform(new AffineTransform());
         bulletDeltaX = Math.sin(Math.toRadians(shipHeading)) * (shipSpeed + bulletSpeed);
         bulletDeltaY = -Math.cos(Math.toRadians(shipHeading)) * (shipSpeed + bulletSpeed);
         bulletXpos += bulletDeltaX;
         bulletYpos += bulletDeltaY;
-        g2.translate(bulletXpos, bulletYpos);
+        g2.translate(bulletXpos, bulletYpos);//The ship's position plus the bullet's translated position
         g2.fill(bulletArea);
         bulletAffineTransform = g2.getTransform();
     }
