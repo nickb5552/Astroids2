@@ -66,7 +66,6 @@ public class Ship
         g2.scale(20, 20);
         g2.rotate(Math.toRadians(getShipHeading()));
         shipAffineTransform = g2.getTransform();
-        //shipArea = shipArea.createTransformedArea(shipAffineTransform);
         g2.fill(shipShape);
         g2.setColor(Color.WHITE);
         g2.draw(shipShape);

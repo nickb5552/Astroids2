@@ -2,7 +2,7 @@ package astroidsnickb;
 
 /**
  * *************************************************
- * copyright Nick Barber 2013 Rev13091A
+ * copyright Nick Barber 2013 Rev130902A
  * *************************************************
  */
 import java.applet.AudioClip;
@@ -103,7 +103,6 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         for (int i = 0; i < bulletList.size(); i++)
         {
             Bullet b = bulletList.get(i);
-            g2.translate(0, 0);
             b.paintSelf(g2);
             if (b.bulletXpos > width)
             {
