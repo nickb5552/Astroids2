@@ -2,7 +2,7 @@ package astroidsnickb;
 
 /**
  * *************************************************
- * copyright Nick Barber 2013 Rev130831A
+ * copyright Nick Barber 2013 Rev13091A
  * *************************************************
  */
 import java.applet.AudioClip;
@@ -41,6 +41,7 @@ public class Controller extends JComponent implements KeyListener, ActionListene
     double shipYpos;
     double shipSpeed;
     double shipHeading;
+    private boolean shipDestroyed = false; 
     AffineTransform shipAffineTransform = new AffineTransform();
     Area shipArea = new Area();
     Area astroidArea = new Area();
@@ -99,27 +100,6 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         this.shipHeading = battleCruiser.getShipHeading();
         shipSpeed = battleCruiser.getShipSpeed();
         battleCruiser.paintSelf(g2);
-        for (int i = 0; i < astroidList.size(); i++)
-        {
-            Astroid a = astroidList.get(i);
-            a.paintSelf(g2);
-            if (a.getAstroidXtranslation() > width) //right
-            {
-                astroidList.remove(i);
-            }
-            if (a.getAstroidXtranslation() < -1000) //left
-            {
-                astroidList.remove(i);
-            }
-            if (a.getAstroidYtranslation() > height) //bottom
-            {
-                astroidList.remove(i);
-            }
-            if (a.getAstroidYtranslation() < -2000) //top
-            {
-                astroidList.remove(i);
-            }
-        }
         for (int i = 0; i < bulletList.size(); i++)
         {
             Bullet b = bulletList.get(i);
@@ -148,16 +128,42 @@ public class Controller extends JComponent implements KeyListener, ActionListene
                 astroidArea = astroidArea.createTransformedArea(a.getAstroidAffineTransform());
                 bulletArea = b.getBulletArea();
                 bulletArea = bulletArea.createTransformedArea(b.getBulletAffineTransform());
-                if (collision(battleCruiser.getShipArea(), astroidArea))
-                {
-                    System.exit(0);
-                }
                 if (collision(bulletArea, astroidArea))
                 {
                     astroidList.remove(j);
                 }
             }
-
+        }
+        for (int i = 0; i < astroidList.size(); i++)
+        {
+            Astroid a = astroidList.get(i);
+            a.paintSelf(g2);
+            if (a.getAstroidXtranslation() > width) //right
+            {
+                astroidList.remove(i);
+            }
+            if (a.getAstroidXtranslation() < -1000) //left
+            {
+                astroidList.remove(i);
+            }
+            if (a.getAstroidYtranslation() > height) //bottom
+            {
+                astroidList.remove(i);
+            }
+            if (a.getAstroidYtranslation() < -2000) //top
+            {
+                astroidList.remove(i);
+            }
+            shipArea = battleCruiser.getShipArea();
+            shipArea = shipArea.createTransformedArea(battleCruiser.getShipAffineTransform());
+            astroidArea = a.getAstroidArea();
+            astroidArea = astroidArea.createTransformedArea(a.getAstroidAffineTransform());
+            if (collision(shipArea, astroidArea))
+            {
+                System.out.println("crash");
+                shipDestroyed = true;
+                battleCruiser.setShipDestroyed(shipDestroyed);
+            }
         }
     }
 
