@@ -10,14 +10,14 @@ import java.awt.geom.Area;
 
 public class Ship
 {
+
     int width = Toolkit.getDefaultToolkit().getScreenSize().width;
     int height = Toolkit.getDefaultToolkit().getScreenSize().height;
     private double shipXpos = 950;
     private double shipYpos = 800;
     private double shipSpeed = 0;
     private boolean shipDestroyed = false;
-    private int explosionXpos = 10;
-    private int explosionYpos = 10;
+    private int explosionDiameter = 10;
     double shipDeltaX = 0;
     double shipDeltaY = 0;
     private double shipHeading = 0;
@@ -38,8 +38,8 @@ public class Ship
         g2.setTransform(new AffineTransform()); // clean up
         g2.drawString("Course " + getShipHeading(), 1800, 200);
         g2.drawString("Speed " + getShipSpeed(), 1800, 300);
-        shipDeltaX = Math.sin(Math.toRadians(getShipHeading())) * getShipSpeed();
-        shipDeltaY = -Math.cos(Math.toRadians(shipHeading)) * getShipSpeed();
+        shipDeltaX = Math.sin(Math.toRadians(getShipHeading())) * shipSpeed;
+        shipDeltaY = -Math.cos(Math.toRadians(shipHeading)) * shipSpeed;
         shipXpos = shipXpos + shipDeltaX;
         shipYpos = shipYpos + shipDeltaY;
         if (getShipYpos() < 0)
@@ -72,10 +72,10 @@ public class Ship
         if (shipDestroyed)
         {
             g2.setColor(Color.RED);
-            g2.setTransform(new AffineTransform());
-            g2.fillOval((int) shipShape.getBounds().getCenterX(), (int) shipShape.getBounds().getCenterY(), explosionXpos, explosionYpos);
-            explosionXpos = explosionXpos + 2;
-            explosionYpos += 2;
+            g2.fillOval((int) shipShape.getBounds().getX(), (int) shipShape.getBounds().getY(), explosionDiameter, explosionDiameter);
+            shipSpeed = 0;
+            explosionDiameter = explosionDiameter + 1;
+            explosionDiameter += 1;
         }
     }
 

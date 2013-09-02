@@ -159,7 +159,6 @@ public class Controller extends JComponent implements KeyListener, ActionListene
             astroidArea = astroidArea.createTransformedArea(a.getAstroidAffineTransform());
             if (collision(shipArea, astroidArea))
             {
-                System.out.println("crash");
                 shipDestroyed = true;
                 battleCruiser.setShipDestroyed(shipDestroyed);
             }
