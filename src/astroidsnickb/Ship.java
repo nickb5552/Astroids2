@@ -10,16 +10,18 @@ import java.awt.geom.Area;
 
 public class Ship
 {
-
     int width = Toolkit.getDefaultToolkit().getScreenSize().width;
     int height = Toolkit.getDefaultToolkit().getScreenSize().height;
     private double shipXpos = 950;
     private double shipYpos = 800;
     private double shipSpeed = 0;
+    private boolean shipDestroyed = false;
+    private int explosionXpos = 10;
+    private int explosionYpos = 10;
     double shipDeltaX = 0;
     double shipDeltaY = 0;
     private double shipHeading = 0;
-    AffineTransform shipAffineTransform = new AffineTransform();
+    private AffineTransform shipAffineTransform = new AffineTransform();
     int[] xPoints =
     {
         0, 3, 1, 1, -1, -1, -3
@@ -60,15 +62,22 @@ public class Ship
         }
         g2.setStroke(new BasicStroke(.01f));
         g2.setColor(Color.BLUE);
-        g2.translate(getShipXpos(), getShipYpos()); //moving the screen
+        g2.translate(shipXpos, shipYpos); //moving the screen
         g2.scale(20, 20);
         g2.rotate(Math.toRadians(getShipHeading()));
-        shipArea = shipArea.createTransformedArea(shipAffineTransform);
-        g2.fill(shipArea);
-        g2.setColor(Color.WHITE);
-        g2.draw(shipArea);
-        g2.setTransform(new AffineTransform());
         shipAffineTransform = g2.getTransform();
+        //shipArea = shipArea.createTransformedArea(shipAffineTransform);
+        g2.fill(shipShape);
+        g2.setColor(Color.WHITE);
+        g2.draw(shipShape);
+        if (shipDestroyed)
+        {
+            g2.setColor(Color.RED);
+            g2.setTransform(new AffineTransform());
+            g2.fillOval((int) shipShape.getBounds().getCenterX(), (int) shipShape.getBounds().getCenterY(), explosionXpos, explosionYpos);
+            explosionXpos = explosionXpos + 2;
+            explosionYpos += 2;
+        }
     }
 
     public double getShipXpos()
@@ -109,5 +118,15 @@ public class Ship
     public Area getShipArea()
     {
         return shipArea;
+    }
+
+    public AffineTransform getShipAffineTransform()
+    {
+        return shipAffineTransform;
+    }
+
+    public void setShipDestroyed(boolean shipDestroyed)
+    {
+        this.shipDestroyed = shipDestroyed;
     }
 }
