@@ -2,7 +2,7 @@ package astroidsnickb;
 
 /**
  * *************************************************
- * copyright Nick Barber 2013 Rev130902A
+ * copyright Nick Barber 2013 Rev130915A
  * *************************************************
  */
 import java.applet.AudioClip;
@@ -41,6 +41,7 @@ public class Controller extends JComponent implements KeyListener, ActionListene
     double shipYpos;
     double shipSpeed;
     double shipHeading;
+    Explosion shipExplosion;
     private boolean shipDestroyed = false; 
     AffineTransform shipAffineTransform = new AffineTransform();
     Area shipArea = new Area();
@@ -48,6 +49,8 @@ public class Controller extends JComponent implements KeyListener, ActionListene
     Area bulletArea = new Area();
     URL fireSoundAddress = getClass().getResource("bullet.wav");
     AudioClip fireFile = JApplet.newAudioClip(fireSoundAddress);
+    URL exploSoundAddress = getClass().getResource("Bomb_Exploding.wav");
+    AudioClip explosionFile = JApplet.newAudioClip(exploSoundAddress);
 
     public static void main(String[] joe)
     {
@@ -68,6 +71,8 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         astroidField.setSize(width, height);
         astroidField.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         battleCruiser = new Ship();
+        shipExplosion = new Explosion();
+        shipExplosion.setBattleCruiser(battleCruiser);
         astroidField.add(this);
         astroidField.addKeyListener(this);
         spaceImage = new ImageIcon(this.getClass().getResource("SpaceBG.jpg")).getImage();
@@ -99,6 +104,10 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         this.shipYpos = battleCruiser.getShipYpos();
         this.shipHeading = battleCruiser.getShipHeading();
         shipSpeed = battleCruiser.getShipSpeed();
+        if (shipDestroyed)
+        {
+            shipExplosion.paintSelf(g2);
+        }
         battleCruiser.paintSelf(g2);
         for (int i = 0; i < bulletList.size(); i++)
         {
@@ -160,6 +169,7 @@ public class Controller extends JComponent implements KeyListener, ActionListene
             if (collision(shipArea, astroidArea))
             {
                 shipDestroyed = true;
+                explosionFile.play();
                 battleCruiser.setShipDestroyed(shipDestroyed);
             }
         }
@@ -173,7 +183,9 @@ public class Controller extends JComponent implements KeyListener, ActionListene
     @Override
     public void keyPressed(KeyEvent ke)
     {
-        if (ke.getKeyCode() == KeyEvent.VK_LEFT)//turns left
+        if (!shipDestroyed)
+        {
+            if (ke.getKeyCode() == KeyEvent.VK_LEFT)//turns left
         {
             battleCruiser.setShipHeading(battleCruiser.getShipHeading() - 5);
         }
@@ -196,6 +208,8 @@ public class Controller extends JComponent implements KeyListener, ActionListene
             fireFile.play();
             bulletList.add(new Bullet(shipXpos, shipYpos, shipSpeed, shipHeading));
         }
+        }
+                
     }
 
     @Override
