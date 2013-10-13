@@ -17,9 +17,12 @@ public class Ship
     private double shipYpos = 800;
     private double shipSpeed = 0;
     private boolean shipDestroyed = false;
-    private int explosionDiameter = 10;
+    private double explosionDiameter = 10;
     double shipDeltaX = 0;
     double shipDeltaY = 0;
+    private Area shipArea2 = new Area();
+    private double shipCenterX;
+    private double shipCenterY;
     private double shipHeading = 0;
     private AffineTransform shipAffineTransform = new AffineTransform();
     int[] xPoints =
@@ -40,7 +43,7 @@ public class Ship
         g2.drawString("Speed " + getShipSpeed(), 1800, 300);
         shipDeltaX = Math.sin(Math.toRadians(getShipHeading())) * shipSpeed;
         shipDeltaY = -Math.cos(Math.toRadians(shipHeading)) * shipSpeed;
-        shipXpos = shipXpos + shipDeltaX;
+        setShipXpos(shipXpos + shipDeltaX);
         shipYpos = shipYpos + shipDeltaY;
         if (getShipYpos() < 0)
         {
@@ -54,29 +57,28 @@ public class Ship
 
         if (getShipXpos() < 0)
         {
-            shipXpos = width;
+            setShipXpos(width);
         }
         if (getShipXpos() > width)
         {
-            shipXpos = 0;
+            setShipXpos(0);
         }
         g2.setStroke(new BasicStroke(.01f));
         g2.setColor(Color.BLUE);
         g2.translate(shipXpos, shipYpos); //moving the screen
+        if (shipDestroyed)
+        {
+             shipSpeed = 0;
+        }
         g2.scale(20, 20);
         g2.rotate(Math.toRadians(getShipHeading()));
         shipAffineTransform = g2.getTransform();
+        shipArea2 = shipArea.createTransformedArea(shipAffineTransform);
+        shipCenterX = shipArea2.getBounds2D().getCenterX();
+        shipCenterY = shipArea2.getBounds2D().getCenterY();
         g2.fill(shipShape);
         g2.setColor(Color.WHITE);
         g2.draw(shipShape);
-        if (shipDestroyed)
-        {
-            g2.setColor(Color.RED);
-            g2.fillOval((int) shipShape.getBounds().getX(), (int) shipShape.getBounds().getY(), explosionDiameter, explosionDiameter);
-            shipSpeed = 0;
-            explosionDiameter = explosionDiameter + 1;
-            explosionDiameter += 1;
-        }
     }
 
     public double getShipXpos()
@@ -127,5 +129,22 @@ public class Ship
     public void setShipDestroyed(boolean shipDestroyed)
     {
         this.shipDestroyed = shipDestroyed;
+    }
+
+    
+    public double getShipCenterX()
+    {
+        return shipCenterX;
+    }
+
+   
+    public double getShipCenterY()
+    {
+        return shipCenterY;
+    }
+
+    public void setShipXpos(double shipXpos)
+    {
+        this.shipXpos = shipXpos;
     }
 }

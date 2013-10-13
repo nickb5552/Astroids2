@@ -2,7 +2,7 @@ package astroidsnickb;
 
 /**
  * *************************************************
- * copyright Nick Barber 2013 Rev131006A
+ * copyright Nick Barber 2013 Rev131013A
  * *************************************************
  */
 import java.applet.AudioClip;
@@ -72,7 +72,6 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         astroidField.setSize(width, height);
         astroidField.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         battleCruiser = new Ship();
-        shipExplosion = new Explosion(battleCruiser);
         astroidField.add(this);
         astroidField.addKeyListener(this);
         spaceImage = new ImageIcon(this.getClass().getResource("SpaceBG.jpg")).getImage();
@@ -104,11 +103,8 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         this.shipYpos = battleCruiser.getShipYpos();
         this.shipHeading = battleCruiser.getShipHeading();
         shipSpeed = battleCruiser.getShipSpeed();
-        if (shipDestroyed)
-        {
-            shipExplosion.paintSelf(g2);
-        }
         battleCruiser.paintSelf(g2);
+        
         for (int i = 0; i < bulletList.size(); i++)
         {
             Bullet b = bulletList.get(i);
@@ -171,6 +167,8 @@ public class Controller extends JComponent implements KeyListener, ActionListene
                 shipDestroyed = true;
                 explosionFile.play();
                 battleCruiser.setShipDestroyed(shipDestroyed);
+                shipExplosion = new Explosion(battleCruiser);
+                shipExplosion.paintSelf(g2);
             }
         }
     }
