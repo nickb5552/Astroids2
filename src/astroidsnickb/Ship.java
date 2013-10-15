@@ -38,47 +38,47 @@ public class Ship
 
     public void paintSelf(Graphics2D g2)
     {
-        g2.setTransform(new AffineTransform()); // clean up
-        g2.drawString("Course " + getShipHeading(), 1800, 200);
-        g2.drawString("Speed " + getShipSpeed(), 1800, 300);
-        shipDeltaX = Math.sin(Math.toRadians(getShipHeading())) * shipSpeed;
-        shipDeltaY = -Math.cos(Math.toRadians(shipHeading)) * shipSpeed;
-        setShipXpos(shipXpos + shipDeltaX);
-        shipYpos = shipYpos + shipDeltaY;
-        if (getShipYpos() < 0)
+        if (!shipDestroyed)
         {
-            setShipYpos(height);
-        }
+            g2.setTransform(new AffineTransform()); // clean up
+            g2.drawString("Course " + getShipHeading(), 1800, 200);
+            g2.drawString("Speed " + getShipSpeed(), 1800, 300);
+            shipDeltaX = Math.sin(Math.toRadians(getShipHeading())) * shipSpeed;
+            shipDeltaY = -Math.cos(Math.toRadians(shipHeading)) * shipSpeed;
+            setShipXpos(shipXpos + shipDeltaX);
+            shipYpos = shipYpos + shipDeltaY;
+            if (getShipYpos() < 0)
+            {
+                setShipYpos(height);
+            }
 
-        if (getShipYpos() > height)
-        {
-            setShipYpos(0);
-        }
+            if (getShipYpos() > height)
+            {
+                setShipYpos(0);
+            }
 
-        if (getShipXpos() < 0)
-        {
-            setShipXpos(width);
+            if (getShipXpos() < 0)
+            {
+                setShipXpos(width);
+            }
+            if (getShipXpos() > width)
+            {
+                setShipXpos(0);
+            }
+            g2.setStroke(new BasicStroke(.01f));
+            g2.setColor(Color.BLUE);
+            g2.translate(shipXpos, shipYpos); //moving the screen
+            g2.scale(20, 20);
+            g2.rotate(Math.toRadians(getShipHeading()));
+            shipAffineTransform = g2.getTransform();
+            shipArea2 = shipArea.createTransformedArea(shipAffineTransform);
+            shipCenterX = shipArea2.getBounds2D().getCenterX();
+            shipCenterY = shipArea2.getBounds2D().getCenterY();
+            g2.fill(shipShape);
+            g2.setColor(Color.WHITE);
+            g2.draw(shipShape);
+            shipAffineTransform = g2.getTransform();
         }
-        if (getShipXpos() > width)
-        {
-            setShipXpos(0);
-        }
-        g2.setStroke(new BasicStroke(.01f));
-        g2.setColor(Color.BLUE);
-        g2.translate(shipXpos, shipYpos); //moving the screen
-        if (shipDestroyed)
-        {
-             shipSpeed = 0;
-        }
-        g2.scale(20, 20);
-        g2.rotate(Math.toRadians(getShipHeading()));
-        shipAffineTransform = g2.getTransform();
-        shipArea2 = shipArea.createTransformedArea(shipAffineTransform);
-        shipCenterX = shipArea2.getBounds2D().getCenterX();
-        shipCenterY = shipArea2.getBounds2D().getCenterY();
-        g2.fill(shipShape);
-        g2.setColor(Color.WHITE);
-        g2.draw(shipShape);
     }
 
     public double getShipXpos()
@@ -131,13 +131,11 @@ public class Ship
         this.shipDestroyed = shipDestroyed;
     }
 
-    
     public double getShipCenterX()
     {
         return shipCenterX;
     }
 
-   
     public double getShipCenterY()
     {
         return shipCenterY;

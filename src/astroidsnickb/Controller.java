@@ -28,6 +28,7 @@ import javax.swing.Timer;
 
 public class Controller extends JComponent implements KeyListener, ActionListener, Runnable
 {
+
     JFrame astroidField;
     int width = Toolkit.getDefaultToolkit().getScreenSize().width;
     int height = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -42,7 +43,7 @@ public class Controller extends JComponent implements KeyListener, ActionListene
     double shipSpeed;
     double shipHeading;
     Explosion shipExplosion;
-    private boolean shipDestroyed = false; 
+    private boolean shipDestroyed = false;    
     AffineTransform shipAffineTransform = new AffineTransform();
     Area shipArea = new Area();
     Area astroidArea = new Area();
@@ -52,12 +53,12 @@ public class Controller extends JComponent implements KeyListener, ActionListene
     URL exploSoundAddress = getClass().getResource("Bomb_Exploding.wav");
     AudioClip explosionFile = JApplet.newAudioClip(exploSoundAddress);
     int paintTickerCounter = 0;
-
+    
     public static void main(String[] joe)
     {
         SwingUtilities.invokeLater(new Controller());
     }
-
+    
     @Override
     public void run()
     {
@@ -75,21 +76,23 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         astroidField.add(this);
         astroidField.addKeyListener(this);
         spaceImage = new ImageIcon(this.getClass().getResource("SpaceBG.jpg")).getImage();
+        shipExplosion = new Explosion();
     }
-
+    
     public boolean collision(Area area1, Area area2)
     {
         Area arealclone = (Area) area1.clone();
         arealclone.intersect(area2);
         if (!arealclone.isEmpty()) //colliding
         {
+            shipDestroyed = true;
             return true;
         } else
         {
             return false;
         }
     }
-
+    
     @Override
     public void paint(Graphics g)
     {
@@ -103,7 +106,10 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         this.shipYpos = battleCruiser.getShipYpos();
         this.shipHeading = battleCruiser.getShipHeading();
         shipSpeed = battleCruiser.getShipSpeed();
-        battleCruiser.paintSelf(g2);
+        if (!shipDestroyed)
+        {
+            battleCruiser.paintSelf(g2);
+        }
         
         for (int i = 0; i < bulletList.size(); i++)
         {
@@ -167,54 +173,57 @@ public class Controller extends JComponent implements KeyListener, ActionListene
                 shipDestroyed = true;
                 explosionFile.play();
                 battleCruiser.setShipDestroyed(shipDestroyed);
-                shipExplosion = new Explosion(battleCruiser);
+                shipExplosion.setShipAffineTransform(battleCruiser.getShipAffineTransform());
+            }
+            if (shipDestroyed)
+            {
                 shipExplosion.paintSelf(g2);
             }
         }
     }
-
+    
     @Override
     public void keyTyped(KeyEvent ke)
     {
     }
-
+    
     @Override
     public void keyPressed(KeyEvent ke)
     {
-        if (!shipDestroyed)
+        if (true)
         {
             if (ke.getKeyCode() == KeyEvent.VK_LEFT)//turns left
-        {
-            battleCruiser.setShipHeading(battleCruiser.getShipHeading() - 5);
+            {
+                battleCruiser.setShipHeading(battleCruiser.getShipHeading() - 5);
+            }
+            
+            if (ke.getKeyCode() == KeyEvent.VK_RIGHT)//turns right
+            {
+                battleCruiser.setShipHeading(battleCruiser.getShipHeading() + 5);
+            }
+            
+            if (ke.getKeyCode() == KeyEvent.VK_UP)//increase speed
+            {
+                battleCruiser.setShipSpeed(battleCruiser.getShipSpeed() + 1);
+            }
+            if (ke.getKeyCode() == KeyEvent.VK_DOWN)//decrease speed
+            {
+                battleCruiser.setShipSpeed(battleCruiser.getShipSpeed() - 1);
+            }
+            if (ke.getKeyCode() == KeyEvent.VK_SPACE) //spacebar shoot bullet
+            {
+                fireFile.play();
+                bulletList.add(new Bullet(shipXpos, shipYpos, shipSpeed, shipHeading));
+            }
         }
-
-        if (ke.getKeyCode() == KeyEvent.VK_RIGHT)//turns right
-        {
-            battleCruiser.setShipHeading(battleCruiser.getShipHeading() + 5);
-        }
-
-        if (ke.getKeyCode() == KeyEvent.VK_UP)//increase speed
-        {
-            battleCruiser.setShipSpeed(battleCruiser.getShipSpeed() + 1);
-        }
-        if (ke.getKeyCode() == KeyEvent.VK_DOWN)//decrease speed
-        {
-            battleCruiser.setShipSpeed(battleCruiser.getShipSpeed() - 1);
-        }
-        if (ke.getKeyCode() == KeyEvent.VK_SPACE) //spacebar shoot bullet
-        {
-            fireFile.play();
-            bulletList.add(new Bullet(shipXpos, shipYpos, shipSpeed, shipHeading));
-        }
-        }
-                
+        
     }
-
+    
     @Override
     public void keyReleased(KeyEvent ke)
     {
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent ae)
     {
@@ -225,14 +234,6 @@ public class Controller extends JComponent implements KeyListener, ActionListene
         if (ae.getSource() == paintTicker)
         {
             repaint();
-        }
-        if (shipDestroyed)
-        {
-            paintTickerCounter++;
-            if (paintTickerCounter >= 150)
-            {
-                paintTicker.stop();
-            }
         }
     }
 }
