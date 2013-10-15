@@ -2,7 +2,7 @@ package astroidsnickb;
 
 /**
  * *************************************************
- * copyright Nick Barber 2013 Rev131013A
+ * copyright Nick Barber 2013 Rev131015A
  * *************************************************
  */
 import java.applet.AudioClip;
